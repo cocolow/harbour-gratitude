@@ -1,0 +1,104 @@
+@import 'tailwindcss';
+
+:root,
+[data-theme='light'] {
+  --app-bg: #f8ede4;
+  --app-bg-elevated: #fff9f4;
+  --app-surface: #edd5c8;
+  --app-text: #2d4a4a;
+  --app-text-muted: #6b7f7a;
+  --app-accent: #c4725a;
+  --app-accent-muted: #e8c4bc;
+  --app-jar-fill: #d4a84b;
+  --app-jar-empty: #f0e4d8;
+  --app-chip: #f3e0d8;
+  --app-chip-active: #c5d4b8;
+  --app-fab: #3d6b6b;
+  --app-bad-day: #5a7a7a;
+  --app-shadow: 0 4px 24px rgba(45, 74, 74, 0.08);
+  --app-speckle: #2d4a4a;
+  --app-on-accent: #fff9f4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --app-bg: #1a2f35;
+    --app-bg-elevated: #243d44;
+    --app-surface: #2d4a52;
+    --app-text: #e8ddd4;
+    --app-text-muted: #9ab0ab;
+    --app-accent: #d4896f;
+    --app-accent-muted: #5c4842;
+    --app-jar-fill: #e0b85a;
+    --app-jar-empty: #354850;
+    --app-chip: #354850;
+    --app-chip-active: #3d5a50;
+    --app-fab: #4a8a8a;
+    --app-bad-day: #4a6a6a;
+    --app-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
+    --app-speckle: #9ab0ab;
+    --app-on-accent: #e8ddd4;
+  }
+}
+
+[data-theme='dark'] {
+  --app-bg: #1a2f35;
+  --app-bg-elevated: #243d44;
+  --app-surface: #2d4a52;
+  --app-text: #e8ddd4;
+  --app-text-muted: #9ab0ab;
+  --app-accent: #d4896f;
+  --app-accent-muted: #5c4842;
+  --app-jar-fill: #e0b85a;
+  --app-jar-empty: #354850;
+  --app-chip: #354850;
+  --app-chip-active: #3d5a50;
+  --app-fab: #4a8a8a;
+  --app-bad-day: #4a6a6a;
+  --app-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
+  --app-speckle: #9ab0ab;
+  --app-on-accent: #e8ddd4;
+}
+
+@theme {
+  --color-app-bg: var(--app-bg);
+  --color-app-bg-elevated: var(--app-bg-elevated);
+  --color-app-surface: var(--app-surface);
+  --color-app-text: var(--app-text);
+  --color-app-text-muted: var(--app-text-muted);
+  --color-app-accent: var(--app-accent);
+  --color-app-accent-muted: var(--app-accent-muted);
+  --color-app-jar-fill: var(--app-jar-fill);
+  --color-app-jar-empty: var(--app-jar-empty);
+  --color-app-chip: var(--app-chip);
+  --color-app-chip-active: var(--app-chip-active);
+  --color-app-fab: var(--app-fab);
+  --color-app-bad-day: var(--app-bad-day);
+  --font-display: 'Caveat', cursive;
+  --font-body: 'Outfit', system-ui, sans-serif;
+  --radius-card: 1.5rem;
+  --radius-button: 2rem;
+  --shadow-app: var(--app-shadow);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--app-bg);
+  color: var(--app-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
