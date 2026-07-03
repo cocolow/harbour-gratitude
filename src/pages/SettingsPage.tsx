@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FIRST_JAR_SIZE } from '../constants';
 import { downloadJsonExport, shouldShowBackupNudge } from '../lib/export';
 import { AppShell } from '../components/AppShell';
 import { useAppData } from '../context/AppProvider';
@@ -33,10 +32,13 @@ export function SettingsPage() {
     await refreshSettings();
   }
 
-  const jarSizeNote =
+  const reward = settings.rewardLabel;
+  const redemptionLine =
     jar.redemptionCount === 0
-      ? `First cycle: ${FIRST_JAR_SIZE} wins, then ${settings.jarSize} per cycle`
-      : `Current cycle: ${settings.jarSize} wins until reward`;
+      ? `Treats earned so far: 0 — your first ${reward} is waiting whenever you're ready.`
+      : jar.redemptionCount === 1
+        ? "You've redeemed once — nice work honoring your wins."
+        : `You've redeemed ${jar.redemptionCount} times — those wins were worth celebrating.`;
 
   return (
     <AppShell>
@@ -61,8 +63,8 @@ export function SettingsPage() {
           }}
         >
           <p className="text-sm leading-relaxed">
-            Your wins live on this device only. Export a backup when you can — it only takes a
-            moment.
+            Your wins live on this device only. When you have a moment, download a backup — it
+            only takes a second.
           </p>
           <button
             type="button"
@@ -74,7 +76,7 @@ export function SettingsPage() {
             }}
             className="mt-3 px-4 py-2 text-sm font-medium"
           >
-            Export backup now
+            Download backup
           </button>
         </div>
       )}
@@ -125,11 +127,14 @@ export function SettingsPage() {
           className="mb-2 text-xs uppercase tracking-[0.15em]"
           style={{ color: t.colors.textMuted }}
         >
-          Jar size
+          Your reward jar
         </h2>
-        <p className="text-sm leading-relaxed">{jarSizeNote}</p>
+        <p className="text-sm leading-relaxed">
+          Each win you log fills your jar. When it&apos;s full, you&apos;ve earned {reward} — take
+          your time getting there.
+        </p>
         <p style={{ color: t.colors.textMuted }} className="mt-2 text-xs">
-          Redemptions so far: {jar.redemptionCount}
+          {redemptionLine}
         </p>
       </section>
 
@@ -179,10 +184,16 @@ export function SettingsPage() {
           className="mb-2 text-xs uppercase tracking-[0.15em]"
           style={{ color: t.colors.textMuted }}
         >
-          Data export
+          Backup your wins
         </h2>
-        <p className="mb-3 text-sm leading-relaxed">
-          Download all entries, settings, jar state, and events as JSON.
+        <p className="text-sm leading-relaxed">
+          Everything you log stays on this phone or browser — nothing is uploaded anywhere else.
+          Download a backup so your wins aren&apos;t lost if you switch devices, clear site data, or
+          reinstall the app.
+        </p>
+        <p style={{ color: t.colors.textMuted }} className="mt-2 text-xs leading-relaxed">
+          It&apos;s saved as a standard JSON file — you don&apos;t need to open it. Keep it somewhere
+          safe, like Files or an email to yourself.
         </p>
         <button
           type="button"
@@ -193,13 +204,13 @@ export function SettingsPage() {
             borderRadius: t.radius.button,
             color: t.colors.text,
           }}
-          className="px-4 py-2 text-sm"
+          className="mt-3 px-4 py-2 text-sm"
         >
-          Export JSON
+          Download backup
         </button>
         {settings.lastExportAt && (
           <p style={{ color: t.colors.textMuted }} className="mt-2 text-xs">
-            Last export: {new Date(settings.lastExportAt).toLocaleDateString()}
+            Last backup: {new Date(settings.lastExportAt).toLocaleDateString()}
           </p>
         )}
       </section>
