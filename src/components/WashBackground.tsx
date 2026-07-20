@@ -1,77 +1,51 @@
+import type { CSSProperties } from 'react';
 import { useAppTheme } from '../theme/useAppTheme';
+import { useReducedMotion } from '../theme/useReducedMotion';
+
+const STAR_DECOR: Array<{
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+  size: number;
+  colorKey: 'jarFill' | 'accent' | 'textMuted';
+  char: string;
+  anim: string;
+}> = [
+  { top: '54px', left: '150px', size: 22, colorKey: 'jarFill', char: '★', anim: 'spinSlow 9s linear infinite' },
+  { top: '130px', right: '26px', size: 20, colorKey: 'accent', char: '✦', anim: 'blink 2.4s ease-in-out infinite' },
+  { top: '330px', left: '14px', size: 18, colorKey: 'accent', char: '★', anim: 'blink 3s ease-in-out infinite' },
+  { bottom: '150px', right: '20px', size: 24, colorKey: 'jarFill', char: '✦', anim: 'spinSlow 12s linear infinite' },
+  { bottom: '80px', left: '28px', size: 16, colorKey: 'textMuted', char: '★', anim: 'blink 2.8s ease-in-out infinite' },
+  { top: '420px', right: '34px', size: 14, colorKey: 'jarFill', char: '★', anim: 'spinSlow 14s linear infinite' },
+];
 
 export function WashBackground() {
-  const { isDark } = useAppTheme();
-
-  if (isDark) {
-    return (
-      <>
-        <div
-          className="pointer-events-none absolute -left-12 -top-8 h-48 w-48 rounded-full opacity-50"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(212, 137, 111, 0.22) 0%, transparent 70%)',
-          }}
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -right-8 top-24 h-40 w-40 rounded-full opacity-40"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(224, 184, 90, 0.18) 0%, transparent 70%)',
-          }}
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -left-6 bottom-40 h-36 w-36 rounded-full opacity-35"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(74, 138, 138, 0.2) 0%, transparent 70%)',
-          }}
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -right-4 bottom-16 h-32 w-32 rounded-full opacity-30"
-          style={{
-            background:
-              'radial-gradient(circle, rgba(45, 74, 82, 0.45) 0%, transparent 70%)',
-          }}
-          aria-hidden
-        />
-      </>
-    );
-  }
+  const { tokens: t } = useAppTheme();
+  const reducedMotion = useReducedMotion();
 
   return (
     <>
-      <div
-        className="pointer-events-none absolute -left-12 -top-8 h-48 w-48 rounded-full opacity-60"
-        style={{
-          background: 'radial-gradient(circle, rgba(232, 180, 160, 0.55) 0%, transparent 70%)',
-        }}
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute -right-8 top-24 h-40 w-40 rounded-full opacity-50"
-        style={{
-          background: 'radial-gradient(circle, rgba(196, 114, 90, 0.35) 0%, transparent 70%)',
-        }}
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute -left-6 bottom-40 h-36 w-36 rounded-full opacity-40"
-        style={{
-          background: 'radial-gradient(circle, rgba(61, 107, 107, 0.25) 0%, transparent 70%)',
-        }}
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute -right-4 bottom-16 h-32 w-32 rounded-full opacity-45"
-        style={{
-          background: 'radial-gradient(circle, rgba(212, 168, 75, 0.3) 0%, transparent 70%)',
-        }}
-        aria-hidden
-      />
+      {STAR_DECOR.map((star, i) => {
+        const pos: CSSProperties = {
+          position: 'absolute',
+          pointerEvents: 'none',
+          zIndex: 0,
+          fontSize: star.size,
+          color: t.colors[star.colorKey],
+          textShadow: '2px 2px 0 rgba(0, 0, 0, 0.12)',
+          ...(star.top ? { top: star.top } : {}),
+          ...(star.bottom ? { bottom: star.bottom } : {}),
+          ...(star.left ? { left: star.left } : {}),
+          ...(star.right ? { right: star.right } : {}),
+          animation: reducedMotion ? undefined : star.anim,
+        };
+        return (
+          <span key={i} style={pos} aria-hidden>
+            {star.char}
+          </span>
+        );
+      })}
     </>
   );
 }

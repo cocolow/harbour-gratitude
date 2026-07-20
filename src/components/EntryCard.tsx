@@ -1,46 +1,101 @@
 import { formatEntryTime } from '../lib/dates';
+import { arcadeCardStyle, arcadeCategoryChipStyle } from '../design/arcadeStyles';
+import { MOTION } from '../design/tokens';
 import { useAppTheme } from '../theme/useAppTheme';
+import { useReducedMotion } from '../theme/useReducedMotion';
 import type { Entry } from '../types';
+
+const CLAMP_CHAR_THRESHOLD = 78;
 
 interface EntryCardProps {
   entry: Entry;
   categoryLabel?: string;
-  tilt?: number;
+  index?: number;
+  onOpen?: (entry: Entry) => void;
 }
 
-export function EntryCard({ entry, categoryLabel, tilt = 0 }: EntryCardProps) {
+export function EntryCard({ entry, categoryLabel, index = 0, onOpen }: EntryCardProps) {
   const { tokens: t } = useAppTheme();
+  const reducedMotion = useReducedMotion();
+  const isLong = entry.text.length > CLAMP_CHAR_THRESHOLD;
+  const isInteractive = Boolean(onOpen);
+
+  const entranceStyle = reducedMotion
+    ? { animation: `rmFade ${MOTION.duration.rmFade}ms ease both`, animationDelay: `${index * 60}ms` }
+    : {
+        animation: `bSlam ${MOTION.duration.cardEntrance}ms ${MOTION.ease} both`,
+        animationDelay: `${index * MOTION.duration.cardStagger}ms`,
+      };
+
   return (
     <li
+      role={isInteractive ? 'button' : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      onClick={isInteractive ? () => onOpen?.(entry) : undefined}
+      onKeyDown={
+        isInteractive
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onOpen?.(entry);
+              }
+            }
+          : undefined
+      }
       style={{
-        backgroundColor: t.colors.bgElevated,
-        borderRadius: '1.25rem 1.75rem 1.5rem 1.25rem',
-        border: `1px solid ${t.colors.jarEmpty}`,
-        boxShadow: t.shadow,
-        transform: `rotate(${tilt}deg)`,
+        ...arcadeCardStyle(t),
+        cursor: isInteractive ? 'pointer' : undefined,
+        ...entranceStyle,
       }}
       className="p-4"
     >
-      <p className="text-sm leading-relaxed">{entry.text}</p>
-      <div className="mt-2 flex items-center gap-2 text-xs" style={{ color: t.colors.textMuted }}>
-        {categoryLabel && (
+      <div className="mb-2 flex items-center justify-between gap-2">
+        {categoryLabel ? (
           <span
             style={{
               backgroundColor: t.colors.chip,
-              borderRadius: '0.75rem 1rem 0.75rem 1rem',
-              padding: '2px 10px',
+              ...arcadeCategoryChipStyle(t),
             }}
           >
             {categoryLabel}
           </span>
+        ) : (
+          <span />
         )}
-        <span>{formatEntryTime(entry.createdAt)}</span>
         {entry.starred && (
-          <span style={{ color: t.colors.jarFill, fontFamily: t.fonts.display, fontSize: '1rem' }}>
+          <span
+            style={{ color: t.colors.jarFill, fontFamily: t.fonts.display, fontSize: '1rem' }}
+            aria-label="Starred"
+          >
             ★
           </span>
         )}
       </div>
+
+      <p
+        className="text-sm leading-relaxed"
+        style={{
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+        }}
+      >
+        {entry.text}
+      </p>
+
+      {isLong && isInteractive && (
+        <p
+          style={{ color: t.colors.accent, fontSize: '12.5px', fontWeight: 500 }}
+          className="mt-2"
+        >
+          read full win →
+        </p>
+      )}
+
+      <p style={{ color: t.colors.textMuted }} className="mt-2 text-xs">
+        {formatEntryTime(entry.createdAt)}
+      </p>
     </li>
   );
 }

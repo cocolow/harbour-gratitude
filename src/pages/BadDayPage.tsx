@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatEntryTime } from '../lib/dates';
 import { logEvent } from '../lib/events';
+import { arcadeCardStyle, arcadePrimaryButton, arcadeChipStyle } from '../design/arcadeStyles';
 import { AppShell } from '../components/AppShell';
 import { WavyDivider } from '../components/WavyDivider';
 import { useAppData } from '../context/AppProvider';
@@ -9,7 +10,7 @@ import { useAppTheme } from '../theme/useAppTheme';
 import { isBigWin } from '../types';
 
 export function BadDayPage() {
-  const { tokens: t } = useAppTheme();
+  const { tokens: t, isDark } = useAppTheme();
   const navigate = useNavigate();
   const { entries, bigWins, getCategoryLabel, incrementReRead } = useAppData();
   const [index, setIndex] = useState(0);
@@ -70,11 +71,7 @@ export function BadDayPage() {
       {entries.length === 0 ? (
         <div
           className="p-8 text-center"
-          style={{
-            backgroundColor: t.colors.bgElevated,
-            borderRadius: '2rem 1.5rem 2.5rem 1.75rem',
-            border: `2px solid ${t.colors.accentMuted}`,
-          }}
+          style={arcadeCardStyle(t)}
         >
           <p
             style={{ fontFamily: t.fonts.display, fontSize: '1.5rem', color: t.colors.text }}
@@ -87,14 +84,7 @@ export function BadDayPage() {
           </p>
         </div>
       ) : carouselEntries.length === 0 ? (
-        <div
-          className="p-6"
-          style={{
-            backgroundColor: t.colors.bgElevated,
-            borderRadius: '2rem 1.5rem 2.5rem 1.75rem',
-            border: `2px solid ${t.colors.accentMuted}`,
-          }}
-        >
+        <div className="p-6" style={arcadeCardStyle(t)}>
           <p style={{ color: t.colors.textMuted }} className="mb-4 text-sm leading-relaxed">
             Keep starring wins you want to revisit — after you read them here twice, they become
             big wins in this carousel.
@@ -121,15 +111,7 @@ export function BadDayPage() {
         </div>
       ) : (
         <>
-          <div
-            className="relative p-6"
-            style={{
-              backgroundColor: t.colors.bgElevated,
-              borderRadius: '2rem 1.5rem 2.5rem 1.75rem',
-              border: `2px solid ${t.colors.accentMuted}`,
-              transform: 'rotate(-0.8deg)',
-            }}
-          >
+          <div className="relative p-6" style={arcadeCardStyle(t)}>
             <blockquote
               style={{
                 fontFamily: t.fonts.quote,
@@ -157,10 +139,11 @@ export function BadDayPage() {
                 onClick={goPrev}
                 style={{
                   backgroundColor: t.colors.chip,
-                  borderRadius: t.radius.button,
                   color: t.colors.text,
+                  padding: '8px 16px',
+                  fontSize: '0.875rem',
+                  ...arcadeChipStyle(t),
                 }}
-                className="px-4 py-2 text-sm"
               >
                 ← Prev
               </button>
@@ -171,11 +154,10 @@ export function BadDayPage() {
                 type="button"
                 onClick={goNext}
                 style={{
-                  backgroundColor: t.colors.fab,
-                  borderRadius: t.radius.button,
-                  color: '#fff',
+                  ...arcadePrimaryButton(t, t.colors.fab, isDark ? t.colors.text : '#fff'),
+                  padding: '8px 16px',
+                  fontSize: '0.875rem',
                 }}
-                className="px-4 py-2 text-sm"
               >
                 Next →
               </button>

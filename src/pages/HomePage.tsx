@@ -1,17 +1,20 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BANNER_MESSAGES } from '../constants';
 import { formatDayLabel, toDateKey } from '../lib/dates';
 import { getJarProgressLabel } from '../lib/jar';
+import { arcadeCardStyle, arcadePrimaryButton } from '../design/arcadeStyles';
 import { AppShell } from '../components/AppShell';
+import { BubbleTeaJar } from '../components/BubbleTeaJar';
 import { EntryCard } from '../components/EntryCard';
+import { EntryDetailSheet } from '../components/EntryDetailSheet';
 import { Fab } from '../components/Fab';
-import { OrganicJar } from '../components/OrganicJar';
 import { HEADER_ICON_CHIP_CLASS, headerIconChipStyle } from '../components/HeaderIconChip';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { WavyDivider } from '../components/WavyDivider';
 import { useAppData } from '../context/AppProvider';
 import { useAppTheme } from '../theme/useAppTheme';
+import type { Entry } from '../types';
 
 function GearIcon() {
   return (
@@ -34,7 +37,7 @@ function GearIcon() {
 }
 
 export function HomePage() {
-  const { tokens: t } = useAppTheme();
+  const { tokens: t, isDark } = useAppTheme();
   const navigate = useNavigate();
   const {
     jar,
@@ -45,12 +48,7 @@ export function HomePage() {
     dismissQuietBanner,
     getCategoryLabel,
   } = useAppData();
-
-  useEffect(() => {
-    if (jar.currentCount >= jarTarget) {
-      navigate('/celebration', { replace: true });
-    }
-  }, [jar.currentCount, jarTarget, navigate]);
+  const [detailEntry, setDetailEntry] = useState<Entry | null>(null);
 
   const todayLabel = formatDayLabel(toDateKey(new Date().toISOString()));
   const progressLabel = getJarProgressLabel(jar.currentCount, jarTarget, settings.rewardLabel);
@@ -68,7 +66,6 @@ export function HomePage() {
                 color: t.colors.accent,
                 fontSize: '2.25rem',
                 lineHeight: 1.1,
-                transform: 'rotate(-1deg)',
               }}
             >
               your wins
@@ -93,11 +90,7 @@ export function HomePage() {
         {showQuietBanner && (
           <div
             className="mb-6 flex items-start gap-3 p-4"
-            style={{
-              backgroundColor: t.colors.bgElevated,
-              borderRadius: '1.25rem 1.5rem 1.25rem 1.75rem',
-              border: `1.5px dashed ${t.colors.accentMuted}`,
-            }}
+            style={arcadeCardStyle(t)}
             role="status"
           >
             <p className="flex-1 text-sm leading-relaxed">{bannerMessage}</p>
@@ -112,21 +105,13 @@ export function HomePage() {
           </div>
         )}
 
-        <div
-          style={{
-            backgroundColor: t.colors.bgElevated,
-            borderRadius: '1.75rem 1.25rem 1.5rem 2rem',
-            boxShadow: t.shadow,
-            border: `1.5px solid ${t.colors.accentMuted}`,
-            transform: 'rotate(-0.5deg)',
-          }}
-          className="mb-6 flex w-full items-center gap-4 p-5"
-        >
-          <OrganicJar
-            fill={t.colors.jarFill}
-            empty={t.colors.jarEmpty}
+        <div style={arcadeCardStyle(t)} className="mb-6 flex w-full items-center gap-4 p-5">
+          <BubbleTeaJar
             level={jar.currentCount}
             target={jarTarget}
+            outlineColor={t.colors.text}
+            jarEmpty={t.colors.jarEmpty}
+            size={100}
           />
           <div>
             <p
@@ -138,7 +123,7 @@ export function HomePage() {
             <p style={{ color: t.colors.textMuted }} className="mt-0.5 text-xs tracking-wide">
               until {settings.rewardLabel} · {cycleLabel}
             </p>
-            <p style={{ color: t.colors.textMuted }} className="mt-1 text-[10px]">
+            <p style={{ color: t.colors.textMuted }} className="mt-1 text-[11px] leading-snug">
               {progressLabel}
             </p>
           </div>
@@ -148,12 +133,9 @@ export function HomePage() {
           type="button"
           onClick={() => navigate('/bad-day')}
           style={{
-            background: `linear-gradient(135deg, ${t.colors.badDay} 0%, ${t.colors.fab} 100%)`,
-            color: '#fff9f4',
-            borderRadius: '2rem 1.5rem 2rem 1.75rem',
+            ...arcadePrimaryButton(t, t.colors.fab, isDark ? t.colors.text : '#fff'),
             fontFamily: t.fonts.display,
             fontSize: '1.2rem',
-            transform: 'rotate(0.6deg)',
           }}
           className="mb-6 w-full py-3.5"
         >
@@ -180,13 +162,21 @@ export function HomePage() {
                 key={entry.id}
                 entry={entry}
                 categoryLabel={getCategoryLabel(entry.categoryId)}
-                tilt={i % 2 === 0 ? -1.2 : 0.9}
+                index={i}
+                onOpen={setDetailEntry}
               />
             ))}
           </ul>
         )}
       </AppShell>
       <Fab />
+      {detailEntry && (
+        <EntryDetailSheet
+          entry={detailEntry}
+          categoryLabel={getCategoryLabel(detailEntry.categoryId)}
+          onClose={() => setDetailEntry(null)}
+        />
+      )}
     </>
   );
 }

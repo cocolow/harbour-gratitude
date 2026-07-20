@@ -1,11 +1,15 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { arcadePrimaryButton, arcadeGhostButton } from '../design/arcadeStyles';
 import { AppShell } from '../components/AppShell';
+import { BubbleTeaJar } from '../components/BubbleTeaJar';
 import { useAppData } from '../context/AppProvider';
 import { useAppTheme } from '../theme/useAppTheme';
+import { useReducedMotion } from '../theme/useReducedMotion';
 
 export function CelebrationPage() {
-  const { tokens: t } = useAppTheme();
+  const { tokens: t, isDark } = useAppTheme();
+  const reducedMotion = useReducedMotion();
   const navigate = useNavigate();
   const { settings, jarTarget, jar, redeemJar } = useAppData();
 
@@ -15,66 +19,64 @@ export function CelebrationPage() {
     }
   }, [jar.currentCount, jarTarget, navigate]);
 
-  async function handleRedeem() {
+  async function handleAcknowledge() {
     await redeemJar();
     navigate('/', { replace: true });
   }
 
   return (
     <AppShell>
-      <div className="flex min-h-[70vh] flex-col items-center justify-center text-center">
+      <div
+        className={`flex min-h-[70vh] flex-col items-center justify-center text-center ${reducedMotion ? '' : 'animate-celeb-in'}`}
+      >
         <p
           style={{
             fontFamily: t.fonts.display,
             color: t.colors.accent,
-            fontSize: '2.5rem',
-            lineHeight: 1.1,
-            transform: 'rotate(-1deg)',
+            fontSize: '3rem',
+            lineHeight: 1,
           }}
         >
-          jar full!
+          time for a treat!
         </p>
         <p style={{ color: t.colors.textMuted }} className="mt-4 max-w-xs text-sm leading-relaxed">
-          You filled {jarTarget} wins. Time for {settings.rewardLabel} — you earned it.
+          your jar is full — {settings.rewardLabel} is on you today.
         </p>
 
-        <div
-          className="my-10 text-6xl"
-          style={{ transform: 'rotate(3deg)' }}
-          aria-hidden
-        >
-          🫧
+        <div className="my-8">
+          <BubbleTeaJar
+            level={jarTarget}
+            target={jarTarget}
+            outlineColor={t.colors.text}
+            jarEmpty={t.colors.jarEmpty}
+            size={138}
+          />
         </div>
 
         <div className="flex w-full max-w-xs flex-col gap-3">
           <button
             type="button"
-            onClick={() => handleRedeem()}
+            onClick={() => handleAcknowledge()}
             style={{
-              backgroundColor: t.colors.fab,
-              color: '#fff',
-              borderRadius: t.radius.button,
+              ...arcadePrimaryButton(t, t.colors.fab, isDark ? t.colors.text : '#fff'),
               fontFamily: t.fonts.display,
               fontSize: '1.25rem',
             }}
             className="py-3"
           >
-            Redeemed
+            treat yourself
           </button>
           <button
             type="button"
-            onClick={() => handleRedeem()}
+            onClick={() => handleAcknowledge()}
             style={{
-              backgroundColor: t.colors.bgElevated,
-              border: `2px solid ${t.colors.accent}`,
-              color: t.colors.accent,
-              borderRadius: t.radius.button,
+              ...arcadeGhostButton(t),
               fontFamily: t.fonts.display,
               fontSize: '1.25rem',
             }}
             className="py-3"
           >
-            Treat yourself
+            celebrate later
           </button>
         </div>
       </div>

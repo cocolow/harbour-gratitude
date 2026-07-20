@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { downloadJsonExport, shouldShowBackupNudge } from '../lib/export';
+import { arcadeCardStyle, arcadeChipStyle, arcadeGhostButton, arcadeInputStyle, arcadePrimaryButton } from '../design/arcadeStyles';
 import { AppShell } from '../components/AppShell';
 import { useAppData } from '../context/AppProvider';
 import { useAppTheme } from '../theme/useAppTheme';
@@ -13,7 +14,7 @@ const THEME_OPTIONS: { value: ThemeMode; label: string }[] = [
 ];
 
 export function SettingsPage() {
-  const { tokens: t } = useAppTheme();
+  const { tokens: t, isDark } = useAppTheme();
   const { settings, jar, updateSettings, refreshSettings } = useAppData();
   const [rewardLabel, setRewardLabel] = useState(settings.rewardLabel);
   const [saved, setSaved] = useState(false);
@@ -54,14 +55,7 @@ export function SettingsPage() {
       </header>
 
       {showNudge && (
-        <div
-          className="mb-6 p-4"
-          style={{
-            backgroundColor: t.colors.surface,
-            borderRadius: '1.25rem 1.5rem 1.25rem 1.75rem',
-            border: `1.5px dashed ${t.colors.accentMuted}`,
-          }}
-        >
+        <div className="mb-6 p-4" style={arcadeCardStyle(t)}>
           <p className="text-sm leading-relaxed">
             Your wins live on this device only. When you have a moment, download a backup — it
             only takes a second.
@@ -70,9 +64,7 @@ export function SettingsPage() {
             type="button"
             onClick={handleExport}
             style={{
-              backgroundColor: t.colors.fab,
-              color: '#fff',
-              borderRadius: t.radius.button,
+              ...arcadePrimaryButton(t, t.colors.fab, isDark ? t.colors.text : '#fff'),
             }}
             className="mt-3 px-4 py-2 text-sm font-medium"
           >
@@ -95,10 +87,7 @@ export function SettingsPage() {
             value={rewardLabel}
             onChange={(e) => setRewardLabel(e.target.value)}
             style={{
-              backgroundColor: t.colors.bgElevated,
-              border: `1.5px dashed ${t.colors.accentMuted}`,
-              borderRadius: '1rem',
-              color: t.colors.text,
+              ...arcadeInputStyle(t),
             }}
             className="flex-1 px-3 py-2 text-sm outline-none"
           />
@@ -106,9 +95,7 @@ export function SettingsPage() {
             type="button"
             onClick={handleSaveLabel}
             style={{
-              backgroundColor: t.colors.fab,
-              color: '#fff',
-              borderRadius: t.radius.button,
+              ...arcadePrimaryButton(t, t.colors.fab, isDark ? t.colors.text : '#fff'),
             }}
             className="px-4 py-2 text-sm"
           >
@@ -149,7 +136,7 @@ export function SettingsPage() {
           className="inline-flex gap-1 p-1"
           style={{
             backgroundColor: t.colors.chip,
-            borderRadius: t.radius.button,
+            ...arcadeChipStyle(t),
           }}
           role="group"
           aria-label="Theme preference"
@@ -199,10 +186,7 @@ export function SettingsPage() {
           type="button"
           onClick={handleExport}
           style={{
-            backgroundColor: t.colors.bgElevated,
-            border: `1.5px solid ${t.colors.accentMuted}`,
-            borderRadius: t.radius.button,
-            color: t.colors.text,
+            ...arcadeGhostButton(t),
           }}
           className="mt-3 px-4 py-2 text-sm"
         >
@@ -220,10 +204,7 @@ export function SettingsPage() {
         style={{ borderColor: t.colors.jarEmpty }}
       >
         <p style={{ color: t.colors.textMuted }} className="text-xs">
-          Design reference:{' '}
-          <Link to="/design/d" className="underline-offset-2 hover:underline">
-            Gentle Words (D)
-          </Link>
+          Design: 90s Arcade (Harbour Motion Study · Direction B)
         </p>
       </section>
     </AppShell>

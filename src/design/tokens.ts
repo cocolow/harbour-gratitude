@@ -1,3 +1,33 @@
+/** Bubble-tea ombre stops — shared across light/dark (Harbour Motion spec §4) */
+export const BUBBLE_TEA_OMBRE = [
+  '#d9cfe0',
+  '#e8c4bc',
+  '#c5d4b8',
+  '#b8cdc7',
+  '#ecd8a8',
+] as const;
+
+/** 90s Arcade motion — sticker-slam entrances, calm fill/drift on vessel */
+export const MOTION = {
+  ease: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+  easeStandard: 'cubic-bezier(0.2, 0, 0, 1)',
+  duration: {
+    state: 120,
+    component: 280,
+    page: 320,
+    cardEntrance: 500,
+    cardStagger: 80,
+    captureSlide: 340,
+    sheetSlide: 340,
+    fillRise: 1000,
+    toast: 1800,
+    rmFade: 300,
+    celebIn: 400,
+  },
+  driftFast: '6s',
+  driftSlow: '7.5s',
+} as const;
+
 export interface DesignTokens {
   id: 'a' | 'b' | 'c' | 'd';
   name: string;
@@ -120,8 +150,8 @@ export const DESIGN_C: DesignTokens = {
 
 export const DESIGN_D: DesignTokens = {
   id: 'd',
-  name: 'Gentle Words',
-  tagline: 'Morgan Harper Nichols — peach washes, script + sans, imperfect warmth',
+  name: '90s Arcade',
+  tagline: 'Gentle Words palette — chunky borders, sticker-slam motion, star wash',
   colors: {
     bg: '#f8ede4',
     bgElevated: '#fff9f4',
@@ -142,9 +172,9 @@ export const DESIGN_D: DesignTokens = {
     display: "'Caveat', cursive",
     quote: "'Caveat', cursive",
   },
-  radius: { card: '1.5rem', button: '2rem', chip: '1rem' },
-  spacing: 'Breathing room — 18px base, 28px section gaps, organic radii',
-  shadow: '0 4px 24px rgba(45, 74, 74, 0.08)',
+  radius: { card: '0.45rem', button: '0.45rem', chip: '3px' },
+  spacing: 'Arcade — 16px base, chunky 3px borders, offset shadows',
+  shadow: '5px 5px 0 #2d4a4a',
 };
 
 /** Night-sky variant — deep teal wash, warm terracotta accents, muted peach glows */
@@ -165,7 +195,7 @@ export const DESIGN_D_DARK: DesignTokens = {
     fab: '#4a8a8a',
     badDay: '#4a6a6a',
   },
-  shadow: '0 4px 24px rgba(0, 0, 0, 0.28)',
+  shadow: '5px 5px 0 #e8ddd4',
 };
 
 export const ALL_DESIGNS = [DESIGN_A, DESIGN_B, DESIGN_C, DESIGN_D] as const;

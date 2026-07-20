@@ -11,5 +11,8 @@ export function getJarProgressLabel(
   target: number,
   rewardLabel: string,
 ): string {
-  return `${current} / ${target} until ${rewardLabel}`;
+  if (current >= target) {
+    return `full · ${current}/${target} — enjoy your ${rewardLabel}`;
+  }
+  return `fill the jar, earn yourself a ${rewardLabel} · ${current}/${target}`;
 }

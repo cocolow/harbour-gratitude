@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { CelebrationGate } from './components/CelebrationGate';
 import { AppProvider } from './context/AppProvider';
 import { DesignPage } from './design/DesignPage';
 import { DESIGN_A, DESIGN_B, DESIGN_C, DESIGN_D } from './design/tokens';
@@ -17,12 +18,14 @@ export default function App() {
       <AppProvider>
         <ThemeManager />
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/capture" element={<CapturePage />} />
-          <Route path="/bad-day" element={<BadDayPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          <Route element={<CelebrationGate />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/capture" element={<CapturePage />} />
+            <Route path="/bad-day" element={<BadDayPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/follow-up" element={<FollowUpPage />} />
+          </Route>
           <Route path="/celebration" element={<CelebrationPage />} />
-          <Route path="/follow-up" element={<FollowUpPage />} />
           <Route path="/design" element={<DesignHub />} />
           <Route path="/design/a" element={<DesignPage tokens={DESIGN_A} />} />
           <Route path="/design/b" element={<DesignPage tokens={DESIGN_B} />} />
